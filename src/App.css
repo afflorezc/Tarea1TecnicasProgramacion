@@ -13,19 +13,33 @@
   }
 }
 
+.Report-header {
+  background-color: #ebf4f7;
+  justify-content: left;
+  text-align: justify;
+  font-size: 18px; 
+  margin-left: 2px;
+  padding: 0 20px;
+}
+
+/*#Text-report, .Report-header h2 {
+  
+}*/
+
 .App-header {
-  background-color: #282c34;
+  background-color: #494d55;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 18px; /*calc(10px + 2vmin)*/
   color: white;
+  padding: 0 30px;
 }
 
 .App-link {
-  color: #61dafb;
+  color: #f0446f;
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +49,41 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.Main-button {
+  background-color: #61dafb;
+  min-height: 4vh;
+  font-size: calc(5px + 2vmin);
+  color:#f0f8ff;
+  border-radius: 10%;
+  border: 5px;
+  margin: 5px;
+  padding: 10px;
+}
+
+.Box-layout {
+  display: flex;
+  background-color: #000000;
+
+}
+
+.Section-app{
+  flex: 45;
+}
+
+.Section-report{
+  flex: 55;
+}
+
+.Label{
+  display: inline;
+}
+
+.Input-box{
+  margin: 10px;
+  padding: 10px;
+  font-size: 15px;
+  border-width: 2px;
+  display: inline;
 }
