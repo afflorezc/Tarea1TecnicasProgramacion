@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 
@@ -23,7 +22,6 @@ function App() {
     setCount(0);
     updateProjectName();
   }
-
 
   /*function handleClick1() {
       setCount(count + 1);
@@ -67,6 +65,8 @@ function App() {
 
           <div className = "Section-app App-header">
 
+            <GeneralForm/>
+
             <InputBox id ="proyecto" labelText = "Nombre del proyecto:" onChange = {updateProjectName}/>
 
             <p>
@@ -98,10 +98,10 @@ function App() {
 
 function MyButton({text, onClick}) {
   return (
-    <div >
-      <button className='Main-button' onClick = {onClick}>
+    /*<div display = "inline">*/
+      <button type = "button" className='Main-button' onClick = {onClick}>
         {text}  </button>
-    </div>
+    /*</div>*/
   );
 }
 
@@ -112,7 +112,126 @@ function InputBox({id, labelText, onChange}){
        <input id = {id} className ="Input-box" type='text' onInput = {onChange}> 
        </input>
     </div>
-  )
+  );
+}
+
+function InputText(){
+  return(
+    <input className = "Input-box" type = "text" required />
+  );
+}
+
+function GeneralForm(){
+
+  function addDevps(){
+    const $inputNumDevps = document.getElementById("desarrolladores");
+    let num = $inputNumDevps.value
+    const $devpsTable = document.getElementById("dev-table");
+    let rowCount = $devpsTable.rows.length -1;
+    console.log("numero de filas tabla:", rowCount);
+    console.log("numero de profesionales", num);
+    
+    if(num > rowCount){
+      for(var i=rowCount; i<num; i++){
+
+        $devpsTable.innerHTML += '<tr>'
+                   + `<td> ${i+1} </td>`
+                   + '<td> <input type = "text"> </td>'
+                   + '<td> <input type = "number" min = "0" step = "10000"> </td>'
+                   + '<td> <input type = "number" min = "0" step = "1"> </td>'
+                + '</tr>'
+        
+        console.log("iteración:", i+1);
+        console.log("filas tabla: ", $devpsTable.rows.length-1);
+  
+        /*let row = createRow(i+1);
+        $devpsTable.appendChild(row);*/
+      }
+    }
+    else if(num < rowCount){
+      for(var i=0; i <rowCount-num; i++){
+        $devpsTable.deleteRow(rowCount-i);
+      }
+      
+    }
+
+    rowCount = $devpsTable.rows.length-1;
+    console.log("numero filas tabla:", rowCount);
+    
+  }
+
+  function createRow(index){
+
+    let row = document.createElement("tr");
+    let cell1 = createLabel(index);
+    let cell2 = createInput();
+    let cell3 = createNumInput(10000);
+    let cell4 = createNumInput(1);
+
+    row.appendChild(cell1);
+    row.appendChild(cell2);
+    row.appendChild(cell3);
+    row.appendChild(cell4);
+    return row;
+  }
+
+  function createLabel(index){
+
+    let cell = document.createElement("td");
+    let label = document.createElement("label");
+    label.value = index;
+    cell.appendChild(label);
+    return cell;
+  }
+
+  function createInput(){
+
+    let inp = document.createElement("input");
+    inp.type = "text";
+    return inp;
+  }
+
+  function createNumInput(step){
+
+    let numInp = document.createElement("input");
+    numInp.type = "number";
+    numInp.min = "0";
+    numInp.step = step;
+
+  }
+
+  return(
+
+    <form>
+
+      <fieldset>
+        <legend>Información básica del equipo de desarollo asignado al proyecto</legend>
+        <p>
+          <label for = "desarrolladores"> Número de desarrolladores  </label>
+          <input className = "Input-box"  type = "number" min = "0" max = "1000" 
+                    step = "1" name = "totalEquipo" id="desarrolladores" required />
+          <MyButton text = "Agregar" onClick = {addDevps}/>
+        </p>
+        <br />
+          <DevTable />
+      </fieldset>
+
+    </form>
+  );
+}
+
+function DevTable(){
+
+  return(
+    <table className = "Input-table"  id = "dev-table">
+      <tr>
+        <th> </th>
+        <th> Nombre profesional </th>
+        <th> Salario mensual </th>
+        <th> Tiempo asignado en días </th>
+      </tr>
+    </table>
+  );
 }
 
 export default App;
