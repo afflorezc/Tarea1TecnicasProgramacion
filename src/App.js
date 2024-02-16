@@ -1,7 +1,10 @@
-import './App.css';
+import "./App.css";
 import Developer from './Developer';
 import * as componentesBasicos from './ComponentesBasicos';
 import { useState } from 'react';
+import Salary from "./components/Salary/Salary";
+import AmbiTrabajo from "./components/AmbienteTrabajo/AmbiTrabajo";
+
 
 /*
 Función principal de la aplicación encargada de renderizar en pantalla
@@ -42,7 +45,7 @@ function App() {
   */
   function addDevps(){
     const $inputNumDevps = document.getElementById("desarrolladores");
-    let num = $inputNumDevps.value
+    let num = $inputNumDevps.value;
     const $devpsTable = document.getElementById("dev-table");
     let rowCount = $devpsTable.rows.length -1;
     
@@ -56,12 +59,10 @@ function App() {
                    + '<td> <input type = "number" min = "0" step = "1"> </td>'
                 + '</tr>'
       }
-    }
-    else if(num < rowCount){
-      for(var i=0; i <rowCount-num; i++){
-        $devpsTable.deleteRow(rowCount-i);
+    } else if (num < rowCount) {
+      for (var i = 0; i < rowCount - num; i++) {
+        $devpsTable.deleteRow(rowCount - i);
       }
-      
     }
     updateNumDevps();
   }
@@ -108,10 +109,8 @@ Estructura del formulario principal de ingreso de los diferentes conjuntos de da
 */
 function GeneralForm({addDevpsFunction, inputProjectFn}){
 
-  return(
-
+  return (
     <form>
-
       <fieldset>
         <legend> Datos generales del proyecto </legend>
         <p>
@@ -129,16 +128,17 @@ function GeneralForm({addDevpsFunction, inputProjectFn}){
 
       <fieldset>
         <legend>Información básica del equipo de desarollo asignado al proyecto</legend>
-        <p>
+        <div>
           <label for = "desarrolladores"> Número de desarrolladores  </label>
           <input className = "Input-box"  type = "number" min = "0" max = "1000" 
                     step = "1" name = "totalEquipo" id="desarrolladores" required />
           <componentesBasicos.MyButton text = "Agregar" onClick = {addDevpsFunction}/>
-        </p>
+        </div>
         <br />
-          <componentesBasicos.DevTable />
+        <componentesBasicos.DevTable />
+        <hr> </hr>
+        <AmbiTrabajo />
       </fieldset>
-
     </form>
   );
 }
