@@ -1,12 +1,14 @@
 import "./App.css";
 import { useState } from "react";
 import Salary from "./components/Salary/Salary";
+import AmbiTrabajo from "./components/AmbienteTrabajo/AmbiTrabajo";
 
 function App() {
   const [count, setCount] = useState(0);
   /*const [count2, setCount2] = useState(0);
   const [animSpeed, setAnimSpeed] = useState(1);*/
   const [nomSoftware, setNomSoft] = useState("Default");
+  
 
   function handleClick() {
     setCount(count + 1);
@@ -199,7 +201,7 @@ function GeneralForm() {
         <legend>
           Información básica del equipo de desarollo asignado al proyecto
         </legend>
-        <p>
+        <div>
           <label for="desarrolladores"> Número de desarrolladores </label>
           <input
             className="Input-box"
@@ -212,9 +214,11 @@ function GeneralForm() {
             required
           />
           <MyButton text="Agregar" onClick={addDevps} />
-        </p>
+        </div>
         <br />
         <DevTable />
+        <hr></hr>
+        <AmbiTrabajo />
       </fieldset>
     </form>
   );
