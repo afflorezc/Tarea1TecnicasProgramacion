@@ -1,151 +1,60 @@
 import './App.css';
+import Developer from './Developer';
+import * as componentesBasicos from './ComponentesBasicos';
 import { useState } from 'react';
 
+/*
+Función principal de la aplicación encargada de renderizar en pantalla
+cada uno de los elementos de la aplicación
+*/
 function App() {
+  
+  /*
+  Definicion de variables de estado que establecen el flujo de datos y aplicación
+  del paradigma reactivo. Estas variables definen el comportamiento de renderizado
+  de los diferentes elementos dependientes de sus cambios
+  */
+  const [nomSoftware, setNomSoft] = useState(""); /*Nombre del proyecto*/ 
+  const [numDesarrolladores, setnumDes] = useState(0); /*Total personal del equipo*/
+  const [listDeveloper, setListDev] = useState([]); /* Lista de profesionales */ 
 
-  const [count, setCount] = useState(0);
-  /*const [count2, setCount2] = useState(0);
-  const [animSpeed, setAnimSpeed] = useState(1);*/
-  const [nomSoftware, setNomSoft] = useState("Default");
+  /*
+  Función de actualización del equipo de desarrollo. Cuando el total de profesionales
+  se actualiza se crea una lista de instancias de la clase Developer para el calculo de
+  costos de cada profesional
+  */
+  function updateNumDevps(){
+    const $inputTotalDes = document.getElementById("desarrolladores");
+    setnumDes($inputTotalDes.value);
 
-  function handleClick() {
-    setCount(count +1);
-    updateProjectName();
-  }
-
-  function updateProjectName() {
-    const $inputNombre = document.getElementById("proyecto");
-    setNomSoft($inputNombre.value);
-  }
-
-  function clickReset() {
-    setCount(0);
-    updateProjectName();
-  }
-
-  /*function handleClick1() {
-      setCount(count + 1);
-      if(animSpeed - 0.2 > 0){
-        setAnimSpeed(animSpeed - 0.2);
-      }
-      else{
-        setAnimSpeed(0);
-      }
-      setSpeed();
-      
-  }
-
-  function handleClick2() {
-    setCount2(count2 + 1);
-    if(animSpeed + 0.2 > 10){
-      setAnimSpeed(10);
+    let list = [];
+    for(var i =0; i< $inputTotalDes.value;i++){
+      let developer = new Developer();
+      list.push(developer);
     }
-    else{
-      setAnimSpeed(animSpeed + 0.2);
-    }
-    setSpeed();
+
+    setListDev(listDeveloper);
   }
-
-  function handleClick3() {
-    setCount(0);
-    setCount2(0);
-    setAnimSpeed(1);
-    setSpeed();
-  }
-
-  function setSpeed(){
-    const $image = document.getElementById("image");
-    const animation = $image.getAnimations();
-    animation[0].updatePlaybackRate(animSpeed);
-  }*/
-
-  return (
-
-        <div className = "Box-layout">
-
-          <div className = "Section-app App-header">
-
-            <GeneralForm/>
-
-            <InputBox id ="proyecto" labelText = "Nombre del proyecto:" onChange = {updateProjectName}/>
-
-            <p>
-              Se ha realizado el costeo de un total de {count} proyectos de software.
-              <br /> Proyecto actual: {count} 
-            </p>
-            <MyButton text = "Iniciar" onClick = {handleClick}/>      
-            <MyButton text = "Reset" onClick = {clickReset}/>    
-
-          </div>
-             
-          <div className = "Section-report Report-header">
-            
-            <h2>Hello people!</h2>
-            <p id = "Text-report"> Este es un reporte generado en tiempo real y de forma dinámica
-                sobre el costeo del software: {nomSoftware} solicitado por el cliente: y en el cual 
-                discriminamos los siguientes componentes de costo:
-            </p>
-            <h3>Costo de mano de obra</h3>
-            <p>
-              Tabla de estimación del costo de mano de obra.
-            </p>
-          </div>
-
-        </div>
-        
-  );
-}
-
-function MyButton({text, onClick}) {
-  return (
-    /*<div display = "inline">*/
-      <button type = "button" className='Main-button' onClick = {onClick}>
-        {text}  </button>
-    /*</div>*/
-  );
-}
-
-function InputBox({id, labelText, onChange}){
-  return(
-    <div>
-       <label className = "Label"> {labelText} </label>
-       <input id = {id} className ="Input-box" type='text' onInput = {onChange}> 
-       </input>
-    </div>
-  );
-}
-
-function InputText(){
-  return(
-    <input className = "Input-box" type = "text" required />
-  );
-}
-
-function GeneralForm(){
-
+  
+  /*
+  Método para añadir una tabla de ingreso de datos para cada uno de los profesionales
+  involucrados con los cuales se manejara el costeo
+  */
   function addDevps(){
     const $inputNumDevps = document.getElementById("desarrolladores");
     let num = $inputNumDevps.value
     const $devpsTable = document.getElementById("dev-table");
     let rowCount = $devpsTable.rows.length -1;
-    console.log("numero de filas tabla:", rowCount);
-    console.log("numero de profesionales", num);
     
     if(num > rowCount){
       for(var i=rowCount; i<num; i++){
 
         $devpsTable.innerHTML += '<tr>'
                    + `<td> ${i+1} </td>`
-                   + '<td> <input type = "text"> </td>'
-                   + '<td> <input type = "number" min = "0" step = "10000"> </td>'
+                   + `<td> <input type = "text" id ="rol-${i+1}" > </td>`
+                   + '<td> <input type = "number" min = "0" step = "100000"> </td>'
                    + '<td> <input type = "number" min = "0" step = "1"> </td>'
                 + '</tr>'
-        
-        console.log("iteración:", i+1);
-        console.log("filas tabla: ", $devpsTable.rows.length-1);
-  
-        /*let row = createRow(i+1);
-        $devpsTable.appendChild(row);*/
       }
     }
     else if(num < rowCount){
@@ -154,55 +63,69 @@ function GeneralForm(){
       }
       
     }
-
-    rowCount = $devpsTable.rows.length-1;
-    console.log("numero filas tabla:", rowCount);
-    
+    updateNumDevps();
   }
 
-  function createRow(index){
-
-    let row = document.createElement("tr");
-    let cell1 = createLabel(index);
-    let cell2 = createInput();
-    let cell3 = createNumInput(10000);
-    let cell4 = createNumInput(1);
-
-    row.appendChild(cell1);
-    row.appendChild(cell2);
-    row.appendChild(cell3);
-    row.appendChild(cell4);
-    return row;
+  /*
+  Actualización del nombre del proyecto
+  */
+  function updateProjectName() {
+    const $inputNombre = document.getElementById("proyecto");
+    setNomSoft($inputNombre.value);
   }
 
-  function createLabel(index){
+  return (
 
-    let cell = document.createElement("td");
-    let label = document.createElement("label");
-    label.value = index;
-    cell.appendChild(label);
-    return cell;
-  }
+        <div className = "Box-layout">
 
-  function createInput(){
+          <div className = "Section-app App-header">
 
-    let inp = document.createElement("input");
-    inp.type = "text";
-    return inp;
-  }
+            <GeneralForm addDevpsFunction = {addDevps} inputProjectFn = {updateProjectName}/>
 
-  function createNumInput(step){
+          </div>
+             
+          <div className = "Section-report Report-header">
+            
+            <h2>Análisis de costos para el proyecto: {nomSoftware}</h2>
+            <p id = "Text-report"> Este es un reporte generado en tiempo real y de forma dinámica
+                sobre el costeo del software: {nomSoftware} solicitado por el cliente: y en el cual 
+                discriminamos los siguientes componentes de costo:
+            </p>
+            <h3>Costo de mano de obra</h3>
+            <p>
+              Para la elaboración del proyecto se estima que se requieran un total de {numDesarrolladores}, 
+              profesionales de desarrollo y otras áreas detallados en la siguiente tabla:
+            </p>
+          </div>
 
-    let numInp = document.createElement("input");
-    numInp.type = "number";
-    numInp.min = "0";
-    numInp.step = step;
+        </div>
+        
+  );
+}
 
-  }
+/*
+Estructura del formulario principal de ingreso de los diferentes conjuntos de datos
+*/
+function GeneralForm({addDevpsFunction, inputProjectFn}){
 
   return(
 
     <form>
+
+      <fieldset>
+        <legend> Datos generales del proyecto </legend>
+        <p>
+          <componentesBasicos.InputBox id ="proyecto" labelText = "Nombre del proyecto:"
+                        type = "text"  onChange = {inputProjectFn}/>
+          <br />
+          <label for = "fecha-inicio"> Fecha de inicio </label>
+          <input className = "Input-box" type = "date" id = "fecha-inicio" />
+          <br />
+          <label for = "fecha-final"> Fecha de finalización </label>
+          <input className = "Input-box" type = "date" id = "fecha-final" />
+          
+        </p>
+      </fieldset>
 
       <fieldset>
         <legend>Información básica del equipo de desarollo asignado al proyecto</legend>
@@ -210,27 +133,13 @@ function GeneralForm(){
           <label for = "desarrolladores"> Número de desarrolladores  </label>
           <input className = "Input-box"  type = "number" min = "0" max = "1000" 
                     step = "1" name = "totalEquipo" id="desarrolladores" required />
-          <MyButton text = "Agregar" onClick = {addDevps}/>
+          <componentesBasicos.MyButton text = "Agregar" onClick = {addDevpsFunction}/>
         </p>
         <br />
-          <DevTable />
+          <componentesBasicos.DevTable />
       </fieldset>
 
     </form>
-  );
-}
-
-function DevTable(){
-
-  return(
-    <table className = "Input-table"  id = "dev-table">
-      <tr>
-        <th> </th>
-        <th> Nombre profesional </th>
-        <th> Salario mensual </th>
-        <th> Tiempo asignado en días </th>
-      </tr>
-    </table>
   );
 }
 
