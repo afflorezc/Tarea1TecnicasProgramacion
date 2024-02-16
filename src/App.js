@@ -21,21 +21,68 @@ function App() {
   const [numDesarrolladores, setnumDes] = useState(0); /*Total personal del equipo*/
   const [listDeveloper, setListDev] = useState([]); /* Lista de profesionales */ 
 
+  const addRol = (e) => {
+
+    const text = e.target.id;
+    console.log(text);
+    const index = text.indexOf("-")+1;
+    let subindex = text.slice(index);
+    let  k = parseInt(subindex)-1;
+    console.log(k)
+    const rol = e.target.value;
+    let list = listDeveloper;
+    console.log(list.length);
+    let developer = list[k];
+    developer.setNombre(rol);
+    
+    setListDev(list);
+
+  };
+
   /*
   Función de actualización del equipo de desarrollo. Cuando el total de profesionales
   se actualiza se crea una lista de instancias de la clase Developer para el calculo de
   costos de cada profesional
   */
   function updateNumDevps(){
+
     const $inputTotalDes = document.getElementById("desarrolladores");
     setnumDes($inputTotalDes.value);
+    let num = $inputTotalDes.value;
+    let list = listDeveloper;
+    let listItems = list.length;
 
-    let list = [];
-    for(var i =0; i< $inputTotalDes.value;i++){
-      let developer = new Developer();
-      list.push(developer);
+    const $tablaDetallesDev = document.getElementById("dev-table-details");
+    let rowCount = $tablaDetallesDev.rows.length -1;
+
+    if(num > listItems){
+      
+      for(let i =listItems; i< num;i++){
+        let developer = new Developer();
+        list.push(developer);
+
+        $tablaDetallesDev.innerHTML += '<tr>'
+                                       + `<td> ${i+1} </td>`
+                                       + `<td> ${developer.nombre} </td>`
+                                       + `<td> ${developer.salario} </td>`
+                                       + `<td> ${developer.dedicacion} </td>`
+                                       + `<td> ${developer.totalHoras} </td>`
+                                       + `<td> ${developer.costoTotal} </td>`
+                                    + '</tr>'
+
+      }
     }
 
+    else if(num < listItems){
+
+      for(let i = 0; i < listItems - num; i++){
+
+        list.pop();
+        $tablaDetallesDev.deleteRow(rowCount - i);
+      }
+    }
+
+    setListDev(list);
     setListDev(listDeveloper);
   }
   
@@ -46,21 +93,56 @@ function App() {
   function addDevps(){
     const $inputNumDevps = document.getElementById("desarrolladores");
     let num = $inputNumDevps.value;
-    const $devpsTable = document.getElementById("dev-table");
+    var $devpsTable = document.getElementById("dev-table");
     let rowCount = $devpsTable.rows.length -1;
     
     if(num > rowCount){
-      for(var i=rowCount; i<num; i++){
 
-        $devpsTable.innerHTML += '<tr>'
+      for(let i=rowCount; i<num; i++){
+
+        let fila = $devpsTable.insertRow();
+        var indexCell = fila.insertCell();
+        var texto = document.createTextNode(i+1);
+        indexCell.appendChild(texto);
+
+        for(var j = 1; j< 4; j++){
+
+          var celda = fila.insertCell();
+          var input = document.createElement("input");
+          if(j===1){
+            input.type = "text";
+            input.id = `rol-${i+1}`;
+            input.addEventListener("input", addRol);
+          }
+          else{
+            input.type = "number";
+            input.min = "0";
+            switch(j){
+              case 2:
+                input.step = "100000";
+                input.id = `salario-${i+1}`;
+                /*input.addEventListener("input", {regSalario});*/
+                break;
+              case 3:
+                input.step = "1";
+                input.id = `dedicacion-${i+1}`;
+                /*input.addEventListener("input", {regDedicacion});*/
+                break;
+            }
+          }
+          celda.appendChild(input);
+
+        }
+        /* $devpsTable.innerHTML += '<tr>'
                    + `<td> ${i+1} </td>`
-                   + `<td> <input type = "text" id ="rol-${i+1}" > </td>`
+                   + `<td> <input type = "text" id ="rol-${i+1}" onInput = {addRol}> </td>`
                    + '<td> <input type = "number" min = "0" step = "100000"> </td>'
                    + '<td> <input type = "number" min = "0" step = "1"> </td>'
-                + '</tr>'
+                + '</tr>' */
       }
+
     } else if (num < rowCount) {
-      for (var i = 0; i < rowCount - num; i++) {
+      for (let i = 0; i < rowCount - num; i++) {
         $devpsTable.deleteRow(rowCount - i);
       }
     }
@@ -89,7 +171,7 @@ function App() {
             
             <h2>Análisis de costos para el proyecto: {nomSoftware}</h2>
             <p id = "Text-report"> Este es un reporte generado en tiempo real y de forma dinámica
-                sobre el costeo del software: {nomSoftware} solicitado por el cliente: y en el cual 
+                sobre el costeo del software: {nomSoftware}, solicitado por el cliente: y en el cual 
                 discriminamos los siguientes componentes de costo:
             </p>
             <h3>Costo de mano de obra</h3>
@@ -97,6 +179,8 @@ function App() {
               Para la elaboración del proyecto se estima que se requieran un total de {numDesarrolladores}, 
               profesionales de desarrollo y otras áreas detallados en la siguiente tabla:
             </p>
+            <br />
+            <componentesBasicos.DetailDevTable />
           </div>
 
         </div>
@@ -136,7 +220,7 @@ function GeneralForm({addDevpsFunction, inputProjectFn}){
         </div>
         <br />
         <componentesBasicos.DevTable />
-        <hr> </hr>
+ 
         <AmbiTrabajo />
       </fieldset>
     </form>

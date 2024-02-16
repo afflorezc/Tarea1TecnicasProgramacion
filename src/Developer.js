@@ -40,6 +40,7 @@ export default class Developer {
       this.seguridadSocial = 0;
       this.salarioHora = 0;
       this.dedicacion = 0;
+      this.totalHoras = 0;
       this.costoTotal = 0;
     }
     /*
@@ -62,6 +63,11 @@ export default class Developer {
     Métodos básicos que calculan los atributos relacionados al costo de cada 
     participante del proyecto
     */
+    calcularTotalHoras(){
+
+      this.totalHoras = this.dedicacion*this.JORNADA;
+
+    }
     calculateSocialSec(){
   
       let salud = (this.salario)*this.EPS;
@@ -86,6 +92,6 @@ export default class Developer {
     calculateTotalCost(){
       
       this.calculatePerHourSalary();
-      this.costoTotal = this.salarioHora*this.dedicacion*this.JORNADA;
+      this.costoTotal = this.salarioHora*this.totalHoras;
     }
   }

@@ -38,3 +38,20 @@ export function  MyButton({text, onClick}) {
       </table>
     );
   }
+
+  export function  DetailDevTable(){
+
+    return(
+      <table className = "Input-table"  id = "dev-table-details">
+        <tr>
+          <th> </th>
+          <th> Rol del profesional </th>
+          <th> Salario mensual </th>
+          <th> Tiempo asignado en días </th>
+          <th> Salario por hora </th>
+          <th> Total de horas </th>
+          <th> Costo Total </th>
+        </tr>
+      </table>
+    );
+  }
