@@ -20,23 +20,56 @@ function App() {
   const [nomSoftware, setNomSoft] = useState(""); /*Nombre del proyecto*/ 
   const [numDesarrolladores, setnumDes] = useState(0); /*Total personal del equipo*/
   const [listDeveloper, setListDev] = useState([]); /* Lista de profesionales */ 
+  const [totalAmbi, setTotalAmbi] = useState(0);
+
+  const updateTotalAmbi = (newTotalAmbi) => {
+    setTotalAmbi(newTotalAmbi);
+  };
 
   const addRol = (e) => {
+
+    const text = e.target.id;
+    const index = text.indexOf("-")+1;
+    let subindex = text.slice(index);
+    let  k = parseInt(subindex)-1;
+    const rol = e.target.value;
+    
+    const newList = listDeveloper.map((developer, index) => {
+        if (index === k) {
+            // Modificar el nombre del desarrollador en la posición k
+            return { ...developer, nombre: rol };
+        } else {
+            // Mantener el desarrollador sin cambios
+            return developer;
+        }
+    });
+
+    // Actualizar el estado listDeveloper con la nueva lista
+    setListDev(newList);
+  };
+
+  const regSalario = (e) => {
 
     const text = e.target.id;
     console.log(text);
     const index = text.indexOf("-")+1;
     let subindex = text.slice(index);
     let  k = parseInt(subindex)-1;
-    console.log(k)
-    const rol = e.target.value;
-    let list = listDeveloper;
-    console.log(list.length);
-    let developer = list[k];
-    developer.setNombre(rol);
+    console.log(k);
+    const salary = parseInt(e.target.value);
     
-    setListDev(list);
+    const newList = listDeveloper.map((developer, index) => {
+        if (index === k) {
+            // Modifica salario
+            return { ...developer, salario: salary };
+        } else {
+            // Mantener el desarrollador sin cambios
+            return developer;
+        }
+    });
 
+    // Actualizar el estado listDeveloper con la nueva lista
+    setListDev(newList);
   };
 
   /*
@@ -52,38 +85,50 @@ function App() {
     let list = listDeveloper;
     let listItems = list.length;
 
-    const $tablaDetallesDev = document.getElementById("dev-table-details");
-    let rowCount = $tablaDetallesDev.rows.length -1;
-
     if(num > listItems){
       
       for(let i =listItems; i< num;i++){
         let developer = new Developer();
         list.push(developer);
-
-        $tablaDetallesDev.innerHTML += '<tr>'
-                                       + `<td> ${i+1} </td>`
-                                       + `<td> ${developer.nombre} </td>`
-                                       + `<td> ${developer.salario} </td>`
-                                       + `<td> ${developer.dedicacion} </td>`
-                                       + `<td> ${developer.totalHoras} </td>`
-                                       + `<td> ${developer.costoTotal} </td>`
-                                    + '</tr>'
-
       }
     }
 
     else if(num < listItems){
 
       for(let i = 0; i < listItems - num; i++){
-
         list.pop();
-        $tablaDetallesDev.deleteRow(rowCount - i);
       }
     }
-
     setListDev(list);
-    setListDev(listDeveloper);
+  }
+  
+  function createTableDetails() {
+    return (
+        <table id="dev-table-details" className = "Input-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Salario</th>
+                    <th>Dedicación</th>
+                    <th>Total de Horas</th>
+                    <th>Costo Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {listDeveloper.map((developer, index) => (
+                    <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{developer.nombre}</td>
+                        <td>{developer.salario}</td>
+                        <td>{developer.dedicacion}</td>
+                        <td>{developer.totalHoras}</td>
+                        <td>{developer.costoTotal}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
   }
   
   /*
@@ -121,7 +166,7 @@ function App() {
               case 2:
                 input.step = "100000";
                 input.id = `salario-${i+1}`;
-                /*input.addEventListener("input", {regSalario});*/
+                input.addEventListener("input", {regSalario});
                 break;
               case 3:
                 input.step = "1";
@@ -133,12 +178,6 @@ function App() {
           celda.appendChild(input);
 
         }
-        /* $devpsTable.innerHTML += '<tr>'
-                   + `<td> ${i+1} </td>`
-                   + `<td> <input type = "text" id ="rol-${i+1}" onInput = {addRol}> </td>`
-                   + '<td> <input type = "number" min = "0" step = "100000"> </td>'
-                   + '<td> <input type = "number" min = "0" step = "1"> </td>'
-                + '</tr>' */
       }
 
     } else if (num < rowCount) {
@@ -163,7 +202,8 @@ function App() {
 
           <div className = "Section-app App-header">
 
-            <GeneralForm addDevpsFunction = {addDevps} inputProjectFn = {updateProjectName}/>
+            <GeneralForm addDevpsFunction = {addDevps} inputProjectFn = {updateProjectName}
+                                   totalAmbi = {totalAmbi} setTotal = {updateTotalAmbi}/>
 
           </div>
              
@@ -180,7 +220,16 @@ function App() {
               profesionales de desarrollo y otras áreas detallados en la siguiente tabla:
             </p>
             <br />
-            <componentesBasicos.DetailDevTable />
+            <div> 
+              {createTableDetails()}
+            </div>
+            <p>
+              Primer rol: "Nada"
+            </p>
+
+            <p>
+              Se estiman unos costos de infraestructura de un total de: {totalAmbi}
+            </p>
           </div>
 
         </div>
@@ -191,7 +240,7 @@ function App() {
 /*
 Estructura del formulario principal de ingreso de los diferentes conjuntos de datos
 */
-function GeneralForm({addDevpsFunction, inputProjectFn}){
+function GeneralForm({addDevpsFunction, inputProjectFn, totalAmbi, setTotal}){
 
   return (
     <form>
@@ -221,7 +270,7 @@ function GeneralForm({addDevpsFunction, inputProjectFn}){
         <br />
         <componentesBasicos.DevTable />
  
-        <AmbiTrabajo />
+        <AmbiTrabajo total={totalAmbi} setTotalAmbi={setTotal} />
       </fieldset>
     </form>
   );

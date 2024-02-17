@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Oficina from "./Oficina";
 import Teletrabajo from "./Teletrabajo";
 
-const AmbiTrabajo = () => {
+
+const AmbiTrabajo = ({setTotalAmbi}) => {
+    
     const [amTrabajo, setAmTrabajo] = useState("office");
     const [total, setTotal] = useState(0);
 
@@ -13,6 +15,11 @@ const AmbiTrabajo = () => {
     const updateTotal = (newTotal) => {
         setTotal(newTotal);
     };
+
+    useEffect(() => {
+        const newTotal = total;
+        setTotalAmbi(newTotal); // Llamando a la función updateTotal para actualizar el total en AmbiTrabajo
+    }, [total, setTotalAmbi]);
 
     return (
         <div>

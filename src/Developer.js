@@ -47,15 +47,15 @@ export default class Developer {
     Setters de los atributos principales que se obtienen del 
     formulario de la aplicación
     */
-    set setNombre(name){
+    setNombre(name){
       this.nombre = name;
     }
   
-    set setSalario(salary){
+    setSalario(salary){
       this.salario = salary;
     }
   
-    set setDedicacion(dedication){
+    setDedicacion(dedication){
       this.dedicacion = dedication;
     }
     
